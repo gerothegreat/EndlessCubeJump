@@ -1,0 +1,222 @@
+body{
+    background: #222323;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+  }
+  #container{
+    margin-top: 05%;
+    display: inline-block;
+  }
+  canvas{
+    background-image: url("../RunningCubeBackground.jpg");
+    border: 1px solid #181818;
+    display: inline-block;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    left: 32.5%;
+  }
+  img {
+    position: fixed;
+    right: 19%;
+    width: 22%;
+    top: 82%;
+  }
+  .controlls {
+    position: relative;
+    left: 20%;
+    font-size: 110%;
+    color: #e3e3e3;
+    font-family: 'Pixelify Sans', sans-serif;
+  }
+  #gameOver {
+    width: 640px;
+    height: 460px;
+    background-color: #000;
+    position: absolute;
+    top: 10.65%;
+    left: 27.6%;
+    opacity: 0;
+    border-radius: 1%;
+  }
+  .over-text {
+    font-family: Orbitron;
+    font-size: 400%;
+    background: linear-gradient(to right, #2ca8c2, #98cb4a, #f76d3c, #f15f74,#5481e6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+    text-align: center;
+    position: relative;
+    top: 15.65%;
+  }
+
+  #gamePaused {
+    width: 340px;
+    height: 460px;
+    background-color: #000;
+    position: absolute;
+    top: 10.65%;
+    left: 39%;
+    opacity: 80%;
+    border-radius: 1%;
+  }
+
+  #resume-button {
+    display: block;
+    left: 29%;
+    margin-top: 020%;
+  }
+
+  #playAgain-button {
+    display: block;
+    left: 25.5%;
+    top: 16%;
+  }
+
+  #menu-button {
+    display: block;
+    left: 32%;
+    top: 17.2%;
+  }
+
+  button {
+    font-family: Orbitron;
+    background-color: #acdbd7;
+    border: 0;
+    outline: 0;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    box-shadow: 0px 0px 10px #0057ab;
+    transition: all 0.3s;
+    cursor: pointer;
+    border-radius: 20px;
+    border: 4px solid #cbe2e0;
+    position: relative;
+    display: inline-block;
+    top: 15%;
+    left: 23%;
+    margin: 2%; /* Add 5% margin around the button */
+  }
+  button:hover {
+    box-shadow: 0px 0px 25px -5px #0057ab;
+    transform: scale(1.03);
+  }
+  button:active {
+    box-shadow: 0px 0px 9px #0065c8;
+    transform: scale(0.98);
+  }
+
+  a {
+    color: black;
+    text-decoration: none;
+ }
+
+  #gameOver p{
+    font-family: Orbitron;
+    font-size: 200%;
+    color: #2ca8c2;
+    text-align: center;
+    position: relative;
+    display: block;
+    top: 9.65%;
+  }
+
+  #wrap {
+    position: absolute;
+    top: 46%;
+    left: 50.9%;
+    transform: translate(-50%, -50%);
+    background-color: #000;
+    width: 840px;
+    height: 460px;
+    margin-left: auto;
+    margin-top: auto;
+  }
+  
+  .text {
+    color: #fbae17;
+    display: inline-block;
+    position: fixed;
+    top: 45%;
+    left: 45%;
+    margin-left: 5px;
+    font-family: Orbitron;
+    animation: fadeInOut 1s infinite; /* Add this line for fading */
+  }
+  
+  .bounceball {
+    display: inline-block;
+    position: fixed;
+    top: 38%;
+    left: 50%;
+    height: 37px;
+    width: 15px;
+  }
+  .bounceball:before {
+    position: absolute;
+    content: "";
+    display: block;
+    top: 0;
+    width: 15px;
+    height: 15px;
+    border-radius: 10%;
+    animation: bounce 500ms alternate infinite ease, changeColor 4s infinite;
+  }
+  
+  @-webkit-keyframes bounce {
+    0% {
+      top: 30px;
+      height: 5px;
+      border-radius: 60px 60px 20px 20px;
+      transform: scaleX(2);
+    }
+    35% {
+      height: 15px;
+      border-radius: 10%;
+      transform: scaleX(1);
+    }
+    100% {
+      top: 0;
+    }
+  }
+  
+  @keyframes bounce {
+    0% {
+      top: 30px;
+      height: 5px;
+      border-radius: 60px 60px 20px 20px;
+      transform: scaleX(2);
+    }
+    35% {
+      height: 15px;
+      border-radius: 10%;
+      transform: scaleX(1);
+    }
+    100% {
+      top: 0;
+    }
+  }
+  @keyframes changeColor {
+    0%, 100% {
+      background-color: #fbae17;
+    }
+    50% {
+      background-color: #ff5733; /* Change to a different color at 50% */
+    }
+    75% {
+      background-color: #f15f74; /* Change to another color at 75% */
+    }
+    90% {
+      background-color: #303234; /* Change to another color at 75% */
+    }
+  }
+
+  @keyframes fadeInOut {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0; /* Text will be completely transparent at 50% of the animation */
+    }
+  }

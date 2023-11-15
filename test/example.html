@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Fade in Animation</title>
+   <style>
+   body{
+     background: #222323;
+     overflow: hidden;
+     margin: 0;
+     padding: 0;
+     
+   }
+   #container{
+     margin-top: 0%;
+     display: inline-block;
+   }
+   canvas {
+     border: 1px solid #181818;
+     display: inline-block;
+     z-index: 99999;
+     left: 0;
+     top: 0;
+     width: 100%;
+     height: 100%;
+     background-image: url('../RunningCubeBackground.jpg');
+     background-position: center;
+     background-repeat: repeat-x;
+     background-size: auto 100%;
+     animation: animatedBackground 05s linear infinite;
+  }
+  @keyframes animatedBackground {
+     from {
+       background-position: 0 0;
+     }
+     to {
+       background-position: -100% 0;
+     }
+   }
+
+
+   #wrap {
+     position: absolute;
+     display: inline-block;
+     left: 0;
+     top: 0;
+     width: 100%;
+     height: 100%;
+     transform: translate(-0%, -0%);
+     background-color: #000;
+   }
+
+   .bounceball {
+    display: inline-block;
+    position: fixed;
+    top: 38%;
+    left: 50%;
+    height: 37px;
+    width: 15px;
+  }
+  .bounceball:before {
+    position: absolute;
+    content: "";
+    display: block;
+    top: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 05%;
+    animation: bounce 500ms alternate infinite ease, mymove 1s infinite, changeColor 4s infinite;
+  }
+  
+  @-webkit-keyframes bounce {
+    0% {
+      top: 30px;
+      height: 5px;
+      border-radius: 60px 60px 20px 20px;
+      transform: scaleX(2);
+    }
+    35% {
+      height: 15px;
+      border-radius: 10%;
+      transform: scaleX(1);
+    }
+    100% {
+      top: 0;
+    }
+  }
+  
+  @keyframes bounce {
+    0% {
+      top: 100px;
+      transform: scaleX(1);
+    }
+    35% {
+      transform: scaleX(1);
+    }
+    100% {
+      top: 0;
+    }
+  }
+
+  @keyframes mymove {
+    100% {transform: rotate(180deg);}
+  }
+
+  @keyframes changeColor {
+    0% {
+      background-color: #fbae17;
+    }
+    50% {
+      background-color: #ff5733; /* Change to a different color at 50% */
+    }
+    75% {
+      background-color: #f15f74; /* Change to another color at 75% */
+    }
+    100% {
+      background-color: #303234; /* Change to another color at 100% */
+    }
+  }
+
+  @keyframes fadeInOut {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0; /* Text will be completely transparent at 50% of the animation */
+    }
+  }
+   </style>
+</head>
+<body>
+   <div id="container"></div> 
+   <div id="wrap">
+      <div class="loading">
+        <div class="bounceball"></div>
+      </div>
+  </div>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+   <script src="https://rawgit.com/soulwire/sketch.js/master/js/sketch.min.js"></script> 
+   <script>
+         var i = 0;
+         var assetsToLoad = 200; // Update this count based on the number of assets
+         var assetsLoaded = 0;
+         var isLoading = true;
+
+         function random(min, max) {
+            return Math.round(min + (Math.random() * (max - min)));
+         }
+
+         function randomChoice(array) {
+            return array[Math.round(random(0, array.length - 1))];
+         }
+
+         //This hold the loading screen.
+         var wrap = document.getElementById("wrap");
+
+         // Define a function to handle the fading effect of the loading screen
+         function fadeOutLoadingScreen() {
+            var opacity = 1;
+            var interval = setInterval(function () {
+               opacity -= 0.05; // Adjust the fade out speed as needed
+               wrap.style.opacity = opacity;
+               if (opacity <= 0) {
+                  // Hide the loading screen when it's completely faded out
+                  wrap.style.display = 'none';
+                  clearInterval(interval);
+               }
+            }, 20 /*Adjust the fade out speed as needed*/);
+         }
+
+         var onAssetLoad = function () {
+            assetsLoaded++;
+            if (assetsLoaded === assetsToLoad) {
+               // All assets are loaded, transition to the game state
+               isLoading = false;
+               fadeOutLoadingScreen(); // Start the fade out animation
+               InfiniteRunner.setup();
+            }
+         };
+
+         var InfiniteRunner = Sketch.create({
+            fullscreen: false,
+            width: 1362,
+            height: 649,
+            container: document.getElementById('container')
+         });
+
+         /*******************/
+         /*****VECTOR2*******/
+         /******************/
+
+         function Vector2(x, y, width, height) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.previousX = 0;
+            this.previousY = 0;
+         };
+
+         Vector2.prototype.setPosition = function (x, y) {
+
+            this.previousX = this.x;
+            this.previousY = this.y;
+
+            this.x = x;
+            this.y = y;
+
+         };
+
+         Vector2.prototype.setX = function (x) {
+
+            this.previousX = this.x;
+            this.x = x;
+
+         };
+
+         Vector2.prototype.setY = function (y) {
+
+            this.previousY = this.y;
+            this.y = y;
+
+         };
+
+
+         Vector2.prototype.insercects = function (obj) {
+
+            if (obj.x < this.x + this.width && obj.y < this.y + this.height &&
+               obj.x + obj.width > this.x && obj.y + obj.height > this.y) {
+               return true;
+            }
+
+            return false;
+         };
+
+         Vector2.prototype.insercectsLeft = function (obj) {
+
+            if (obj.x < this.x + this.width && obj.y < this.y + this.height) {
+               return true;
+            }
+
+            return false;
+         };
+
+         /*******************/
+         /*****platform****/
+         /******************/
+
+         function Platform(options) {
+            this.x = options.x;
+            this.y = options.y;
+            this.width = options.width;
+            this.height = options.height;
+            this.previousX = 0;
+            this.previousY = 0;
+            this.color = options.color;
+         }
+
+         Platform.prototype = new Vector2;
+
+         Platform.prototype.draw = function () {
+            InfiniteRunner.fillStyle = this.color;
+            InfiniteRunner.fillRect(this.x, this.y, this.width, this.height);
+            InfiniteRunner.save();
+            InfiniteRunner.fillStyle = this.color;
+            InfiniteRunner.shadowColor = this.color;
+            InfiniteRunner.shadowBlur = this.width / 50;
+            InfiniteRunner.fillRect(this.x, this.y, this.width, this.height); // fills tiles occupied by snake array's coordinates
+            InfiniteRunner.restore();
+
+            InfiniteRunner.strokeStyle = "#644ab7";
+            InfiniteRunner.strokeRect(this.x, this.y, this.width, this.height);
+
+            // Draw grid lines
+            const gridSize = 30; // You can adjust the grid spacing as needed
+            InfiniteRunner.strokeStyle = "#644ab7"; // Set grid line color
+            InfiniteRunner.lineWidth = 1; // Set grid line width
+
+            for (let i = this.x; i < this.x + this.width; i += gridSize) {
+               InfiniteRunner.beginPath();
+               InfiniteRunner.moveTo(i, this.y);
+               InfiniteRunner.lineTo(i, this.y + this.height);
+               InfiniteRunner.stroke();
+            }
+
+            for (let j = this.y; j < this.y + this.height; j += gridSize) {
+               InfiniteRunner.beginPath();
+               InfiniteRunner.moveTo(this.x, j);
+               InfiniteRunner.lineTo(this.x + this.width, j);
+               InfiniteRunner.stroke();
+            }
+         };
+
+         /*******************PLATFORM MANAGER*************/
+
+         function PlatformManager() {
+            this.maxDistanceBetween = 260;
+            this.colors = ['#2ca8c2', '#98cb4a', '#f76d3c', '#f15f74', '#5481e6'];
+
+            this.first = new Platform({ x: 260, y: InfiniteRunner.width / 2, width: 400, height: 70 })
+            this.second = new Platform({ x: (this.first.x + this.first.width) + random(this.maxDistanceBetween - 130, this.maxDistanceBetween), y: random(this.first.y - 90, InfiniteRunner.height - 70), width: 400, height: 70 })
+            this.third = new Platform({ x: (this.second.x + this.second.width) + random(this.maxDistanceBetween - 130, this.maxDistanceBetween), y: random(this.second.y - 90, InfiniteRunner.height - 70), width: 400, height: 70 })
+
+            this.first.height = this.first.y + InfiniteRunner.height;
+            this.second.height = this.second.y + InfiniteRunner.height;
+            this.third.height = this.third.y + InfiniteRunner.height;
+            this.first.color = randomChoice(this.colors);
+            this.second.color = randomChoice(this.colors);
+            this.third.color = randomChoice(this.colors);
+
+            this.colliding = false;
+            this.platforms = [this.first, this.second, this.third];
+         }
+
+         PlatformManager.prototype.update = function () {
+            this.first.x -= 2 + InfiniteRunner.aceleration;
+            if (this.first.x + this.first.width < 0) {
+               this.first.width = random(450, InfiniteRunner.width + 200);
+               this.first.x = (this.third.x + this.third.width) + random(this.maxDistanceBetween - 130, this.maxDistanceBetween);
+               this.first.y = random(this.third.y - 32, InfiniteRunner.height - 70);
+               this.first.height = this.first.y + InfiniteRunner.height + 10;
+               this.first.color = randomChoice(this.colors);
+            }
+
+            this.second.x -= 2 + InfiniteRunner.aceleration;
+            if (this.second.x + this.second.width < 0) {
+               this.second.width = random(450, InfiniteRunner.width + 200);
+               this.second.x = (this.first.x + this.first.width) + random(this.maxDistanceBetween - 130, this.maxDistanceBetween);
+               this.second.y = random(this.first.y - 32, InfiniteRunner.height - 70);
+               this.second.height = this.second.y + InfiniteRunner.height + 10;
+               this.second.color = randomChoice(this.colors);
+            }
+
+            this.third.x -= 2 + InfiniteRunner.aceleration;
+            if (this.third.x + this.third.width < 0) {
+               this.third.width = random(450, InfiniteRunner.width + 200);
+               this.third.x = (this.second.x + this.second.width) + random(this.maxDistanceBetween - 130, this.maxDistanceBetween);
+               this.third.y = random(this.second.y - 32, InfiniteRunner.height - 70);
+               this.third.height = this.third.y + InfiniteRunner.height + 10;
+               this.third.color = randomChoice(this.colors);
+            }
+         };
+
+         PlatformManager.prototype.updateWhenLose = function () {
+            this.first.x = 260;
+            this.first.color = randomChoice(this.colors);
+            this.first.y = InfiniteRunner.width / random(2, 3);
+            this.second.x = (this.first.x + this.first.width) + random(this.maxDistanceBetween - 130, this.maxDistanceBetween);
+            this.third.x = (this.second.x + this.second.width) + random(this.maxDistanceBetween - 130, this.maxDistanceBetween);
+         };
+
+         /************************************************/
+
+         InfiniteRunner.setup = function () {
+            this.aceleration = 0;
+            this.acelerationTweening = 0;
+            this.platformManager = new PlatformManager();
+         };
+
+         InfiniteRunner.update = function () {
+            for (i = 0; i < this.platformManager.platforms.length; i++) {
+               this.platformManager.update();
+            };
+
+            this.aceleration += (this.acelerationTweening - this.aceleration) * 0.01;
+            InfiniteRunner.onload = onAssetLoad();
+         };
+
+         InfiniteRunner.draw = function () {
+            for (i = 0; i < this.platformManager.platforms.length; i++) {
+               this.platformManager.platforms[i].draw();
+            };
+         };
+
+         InfiniteRunner.resize = function () {
+            
+         };
+   </script>
+</body>
+</html>
